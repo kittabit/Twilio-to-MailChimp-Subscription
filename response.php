@@ -1,8 +1,8 @@
 <?php
 function submitEmail(){
 	require_once('mailchimp.class.php');	
-	$api = new MCAPI('590f84584c16b435a6e40de076edbbba-us2');
-	$mailChimpListId = "9c0699c6bd";
+	$api = new MCAPI('');
+	$mailChimpListId = "";
 	
 	if(!$_REQUEST['Body']){ 
 		return "No Email Address Provided"; 

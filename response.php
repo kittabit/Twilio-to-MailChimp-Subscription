@@ -1,8 +1,9 @@
 <?php
+require_once('mailchimp.class.php');
+require_once('config.php');
+
 function submitEmail(){
-	require_once('mailchimp.class.php');	
-	$api = new MCAPI('');
-	$mailChimpListId = "";
+	$api = new MCAPI($mc_api_key);
 	
 	if(!$_REQUEST['Body']){ 
 		return "No Email Address Provided"; 
@@ -12,14 +13,14 @@ function submitEmail(){
 		return "Email Address Is Invalid, Please Try Again.";
 	}	
 	
-	if($api->listSubscribe($mailChimpListId, $_REQUEST['Body'], '') === true) {
+	if($api->listSubscribe($mc_list_id, $_REQUEST['Body'], '') === true) {
 		return $_REQUEST['Body']." Successfully Subscribed!";
 	}else{
 		return "Error, Please Try Again Later.";
 	}	
 }
 	
-header("content-type: text/xml");
+header("Content-type: text/xml");
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 ?>
 <Response>

@@ -44,7 +44,7 @@ function submitEmail() {
 	}
 	
 	if($api->listSubscribe($mc_list_id, $email, $merge_vars) === true) {
-		return sprintf($success_confirm_subscription, $email);
+		return htmlentities(sprintf($success_confirm_subscription, $email));
 	} else {
 		error_log($api->errorCode . ": " . $api->errorMessage);
 

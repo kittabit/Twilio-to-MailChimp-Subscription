@@ -31,6 +31,7 @@ function submitEmail() {
 
 	$email = $matches[0];
 
+	// add a text SOURCE merge tag to track subscriber signup origin with more detail
 	$merge_vars = array(
 		'SOURCE' => 'TXT',
 	);
@@ -48,11 +49,12 @@ function submitEmail() {
 	if(!empty($_REQUEST['From'])) {
 		$phone_matches = array();
 
-		if(!preg_match("/(1?(-?\d{3})-?)?(\d{3})(-?\d{4})/", $_REQUEST['From'], $phone_matches)) {
+		// don't change the PHONE merge tag format: it will break if not NNN-NXX-YYYY
+		if(preg_match("/(1?(-?\d{3})-?)?(\d{3})(-?\d{4})/", $_REQUEST['From'], $phone_matches)) {
 			$merge_vars['PHONE'] = $phone_matches[2] . '-' . $phone_matches[3] . '-' . $phone_matches[4];
 		}
 	}
-	
+
 	if($api->listSubscribe($mc_list_id, $email, $merge_vars) === true) {
 		return htmlentities(sprintf($success_confirm_subscription, $email));
 	} else {

@@ -5,7 +5,8 @@ error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
 ini_set("display_errors", false);
 ini_set('log_errors', true);
-ini_set('html_errors', false); 
+ini_set('html_errors', false);
+ini_set('error_log', dirname(__FILE__).'/twilio.log');
 
 // TODO logging needs to be added
 
@@ -30,19 +31,30 @@ function submitEmail() {
 
 	$email = $matches[0];
 
+	// add a text SOURCE merge tag to track subscriber signup origin with more detail
 	$merge_vars = array(
-		'SOURCE' => 'TXT'
+		'SOURCE' => 'TXT',
 	);
+
+	if(!empty($group_name) && !empty($group_subscription)) {
+		$merge_vars['GROUPINGS'] = array(
+			"0" => array(
+				'name' => $group_name,
+				'groups' => $group_subscription,
+			)
+		);
+	}
 
 	// the twilio (us) phone # is always: +1xxxyyyzzzz
 	if(!empty($_REQUEST['From'])) {
 		$phone_matches = array();
 
-		if(!preg_match("/(1?(-?\d{3})-?)?(\d{3})(-?\d{4})/", $_REQUEST['From'], $phone_matches)) {
+		// don't change the PHONE merge tag format: it will break if not NNN-NXX-YYYY
+		if(preg_match("/(1?(-?\d{3})-?)?(\d{3})(-?\d{4})/", $_REQUEST['From'], $phone_matches)) {
 			$merge_vars['PHONE'] = $phone_matches[2] . '-' . $phone_matches[3] . '-' . $phone_matches[4];
 		}
 	}
-	
+
 	if($api->listSubscribe($mc_list_id, $email, $merge_vars) === true) {
 		return htmlentities(sprintf($success_confirm_subscription, $email));
 	} else {

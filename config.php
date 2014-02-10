@@ -3,6 +3,10 @@
 $mc_api_key = '';
 $mc_list_id = '';
 
+// group subscription
+// $group_name = 'group name';
+// $group_subscription = 'group subscription';
+
 // messages
 $error_general = 'Error, please try again later.';
 $error_already_subscribed = "You are already subscribed.";

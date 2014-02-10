@@ -5,7 +5,8 @@ error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
 ini_set("display_errors", false);
 ini_set('log_errors', true);
-ini_set('html_errors', false); 
+ini_set('html_errors', false);
+ini_set('error_log', dirname(__FILE__).'/twilio.log');
 
 // TODO logging needs to be added
 
@@ -31,8 +32,17 @@ function submitEmail() {
 	$email = $matches[0];
 
 	$merge_vars = array(
-		'SOURCE' => 'TXT'
+		'SOURCE' => 'TXT',
 	);
+
+	if(!empty($group_name) && !empty($group_subscription)) {
+		$merge_vars['GROUPINGS'] = array(
+			"0" => array(
+				'name' => $group_name,
+				'groups' => $group_subscription,
+			)
+		);
+	}
 
 	// the twilio (us) phone # is always: +1xxxyyyzzzz
 	if(!empty($_REQUEST['From'])) {
